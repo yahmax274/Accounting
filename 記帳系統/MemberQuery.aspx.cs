@@ -206,8 +206,8 @@ namespace 記帳系統
                 Session["SelectedNote"] = selectedNote;
                 Session["SelectedidValue"] = idValue;
 
-                // 返回到"MemberRegister.aspx"
-                Response.Redirect("MemberRegister.aspx");
+                // 返回到"MemberRegisterIndex.aspx"
+                Response.Redirect("MemberRegisterIndex.aspx");
 
             }
         }

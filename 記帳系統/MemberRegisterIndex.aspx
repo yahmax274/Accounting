@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="MemberRegister.aspx.cs" Inherits="記帳系統.MemberRegister"  EnableViewState="true"%>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="MemberRegisterIndex.aspx.cs" Inherits="記帳系統.MemberRegister"  EnableViewState="true"%>
 
 
 <!DOCTYPE html>
@@ -104,9 +104,10 @@
 </head>
 <body>
     <form id="form1" runat="server">
+        <h3>奉獻者資料維護</h3>
         <div id="container">
             <div id="left-section">
-                <h3>奉獻者資料維護</h3>
+                <h3></h3>
                 <iframe id="yourIframe" src="MemberSheet.aspx" height="350" width="700"></iframe>
             </div>
             <div id="right-section">

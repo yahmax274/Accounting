@@ -134,8 +134,9 @@
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="IncomeRegistrationIndex.aspx" />
     <Content Include="MemberQuery.aspx" />
-    <Content Include="MemberRegister.aspx" />
+    <Content Include="MemberRegisterIndex.aspx" />
     <Content Include="MemberSheet.aspx" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
@@ -234,6 +235,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="IncomeRegistrationIndex.aspx.cs">
+      <DependentUpon>IncomeRegistrationIndex.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="IncomeRegistrationIndex.aspx.designer.cs">
+      <DependentUpon>IncomeRegistrationIndex.aspx</DependentUpon>
+    </Compile>
     <Compile Include="MemberQuery.aspx.cs">
       <DependentUpon>MemberQuery.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -241,12 +249,12 @@
     <Compile Include="MemberQuery.aspx.designer.cs">
       <DependentUpon>MemberQuery.aspx</DependentUpon>
     </Compile>
-    <Compile Include="MemberRegister.aspx.cs">
-      <DependentUpon>MemberRegister.aspx</DependentUpon>
+    <Compile Include="MemberRegisterIndex.aspx.cs">
+      <DependentUpon>MemberRegisterIndex.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="MemberRegister.aspx.designer.cs">
-      <DependentUpon>MemberRegister.aspx</DependentUpon>
+    <Compile Include="MemberRegisterIndex.aspx.designer.cs">
+      <DependentUpon>MemberRegisterIndex.aspx</DependentUpon>
     </Compile>
     <Compile Include="MemberSheet.aspx.cs">
       <DependentUpon>MemberSheet.aspx</DependentUpon>
