@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="起始頁面.aspx.cs" Inherits="記帳系統.WebForm2" %>
+﻿﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="起始頁面.aspx.cs" Inherits="記帳系統.WebForm2" %>
 
 <!DOCTYPE html>
 

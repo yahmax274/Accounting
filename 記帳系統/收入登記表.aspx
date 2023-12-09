@@ -52,6 +52,9 @@
 
         #GridView1 {
             margin-top: 20px;
+            max-height: 300px; /* 設置GridView1的最大高度，超過這個高度將顯示垂直卷軸 */
+            overflow-y: auto; /* 顯示垂直卷軸，僅在內容超出高度時顯示 */
+            overflow-x: hidden; /* 隱藏水平卷軸，避免水平卷軸出現 */
         }
     </style>
 </head>

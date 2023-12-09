@@ -11,7 +11,7 @@ namespace 記帳系統
 {
 
 
-    public partial class 測試
+    public partial class MemberSheet
     {
 
         /// <summary>
@@ -24,15 +24,6 @@ namespace 記帳系統
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// OpenPopupButton 控制項。
-        /// </summary>
-        /// <remarks>
-        /// 自動產生的欄位。
-        /// 若要修改，請將欄位宣告從設計工具檔案移到程式碼後置檔案。
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button OpenPopupButton;
-
-        /// <summary>
         /// GridView1 控制項。
         /// </summary>
         /// <remarks>
@@ -42,12 +33,12 @@ namespace 記帳系統
         protected global::System.Web.UI.WebControls.GridView GridView1;
 
         /// <summary>
-        /// ClosePopupButton 控制項。
+        /// SqlDataSource1 控制項。
         /// </summary>
         /// <remarks>
         /// 自動產生的欄位。
         /// 若要修改，請將欄位宣告從設計工具檔案移到程式碼後置檔案。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button ClosePopupButton;
+        protected global::System.Web.UI.WebControls.SqlDataSource SqlDataSource1;
     }
 }
