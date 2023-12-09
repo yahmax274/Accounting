@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -17,7 +18,56 @@ namespace 記帳系統
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack)
+            {
+                // 檢查 Session 中是否存在選擇的資料
+                if (Session["SelectedName"] != null)
+                {
+                    // 取得選擇的資料
+                    string selectedUser_Id = Session["SelectedUser_Id"].ToString();
+                    string selectedName = Session["SelectedName"].ToString();
+                    string selectedGroup = Session["SelectedGroup"].ToString();
+                    string selectedPhone1 = Session["SelectedPhone1"].ToString();
+                    string selectedPhone2 = Session["SelectedPhone2"].ToString();
+                    string selectedPostalCode = Session["SelectedPostalCode"].ToString();
+                    string selectedAddress = Session["SelectedAddress"].ToString();
+                    string selectedNote = Session["SelectedNote"].ToString();
+                    string idValue = Session["SelectedidValue"].ToString();
 
+                    //判斷是否為空值
+                    selectedUser_Id = (selectedUser_Id == "&nbsp;") ? string.Empty : selectedUser_Id;
+                    selectedName = (selectedName == "&nbsp;") ? string.Empty : selectedName;
+                    selectedGroup = (selectedGroup == "&nbsp;") ? string.Empty : selectedGroup;
+                    selectedPhone1 = (selectedPhone1 == "&nbsp;") ? string.Empty : selectedPhone1;
+                    selectedPhone2 = (selectedPhone2 == "&nbsp;") ? string.Empty : selectedPhone2;
+                    selectedPostalCode = (selectedPostalCode == "&nbsp;") ? string.Empty : selectedPostalCode;
+                    selectedAddress = (selectedAddress == "&nbsp;") ? string.Empty : selectedAddress;
+                    selectedNote = (selectedNote == "&nbsp;") ? string.Empty : selectedNote;
+                    idValue = (idValue == "&nbsp;") ? string.Empty : idValue;
+
+                    // 將資料顯示在對應的TextBox中
+                    IDTextBox.Text = selectedUser_Id;
+                    NameTextBox.Text = selectedName;
+                    GroupDropDownList.Text = selectedGroup;
+                    Phone1TextBox.Text = selectedPhone1;
+                    Phone2TextBox.Text = selectedPhone2;
+                    PostalCodeTextBox.Text = selectedPostalCode;
+                    AddressTextBox.Text = selectedAddress;
+                    NoteTextBox.Text = selectedNote;
+                    KeyIDTextBox.Text = idValue;
+
+                    // 清除 Session 中的選擇資料
+                    Session.Remove("SelectedUser_Id");
+                    Session.Remove("SelectedName");
+                    Session.Remove("SelectedGroup");
+                    Session.Remove("selectedPhone1");
+                    Session.Remove("selectedPhone2");
+                    Session.Remove("selectedPostalCode");
+                    Session.Remove("selectedAddress");
+                    Session.Remove("selectedNote");
+                    Session.Remove("SelectedidValue");
+                }
+            }
         }
         protected void IDTextBox_TextChanged(object sender, EventArgs e)
         {
@@ -170,7 +220,8 @@ namespace 記帳系統
 
         protected void SearchButton_Click(object sender, EventArgs e)
         {
-            // 獲取查詢條件
+            /*
+            // 查詢並將結果存在 Session 
             string name = NameTextBox.Text;
             string phone1 = Phone1TextBox.Text;
             string phone2 = Phone2TextBox.Text;
@@ -178,12 +229,29 @@ namespace 記帳系統
             string address = AddressTextBox.Text;
             string note = NoteTextBox.Text;
 
-            // 構建查詢字符串
-            string queryString = $"?Name={Server.UrlEncode(name)}&Phone1={Server.UrlEncode(phone1)}&Phone2={Server.UrlEncode(phone2)}&PostalCode={Server.UrlEncode(postalCode)}&Address={Server.UrlEncode(address)}&Note={Server.UrlEncode(note)}";
+            // 使用查詢條件查詢資料
+            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
+            {
+                con.Open();
+                string selectQuery = "SELECT * FROM [User_Form] WHERE [Name] LIKE @Name AND [Phone1] LIKE @Phone1 AND [Phone2] LIKE @Phone2 AND [Postal_Code] LIKE @PostalCode AND [Address] LIKE @Address AND [note] LIKE @Note";
+                SqlCommand cmd = new SqlCommand(selectQuery, con);
+                cmd.Parameters.AddWithValue("@Name", "%" + name + "%");
+                cmd.Parameters.AddWithValue("@Phone1", "%" + phone1 + "%");
+                cmd.Parameters.AddWithValue("@Phone2", "%" + phone2 + "%");
+                cmd.Parameters.AddWithValue("@PostalCode", "%" + postalCode + "%");
+                cmd.Parameters.AddWithValue("@Address", "%" + address + "%");
+                cmd.Parameters.AddWithValue("@Note", "%" + note + "%");
 
-            // 使用 JavaScript 開啟小視窗，將查詢條件傳遞到新的頁面
-            string script = $"openPopup('MemberRegisterSearch.aspx{queryString}');";
-            ClientScript.RegisterStartupScript(this.GetType(), "OpenPopup", script, true);
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                DataTable dt = new DataTable();
+                adapter.Fill(dt);
+
+                // 結果保存到 Session
+                Session["SearchResults"] = dt;
+            }*/
+
+            Response.Redirect("MemberQuery.aspx");
         }
+
     }
 }

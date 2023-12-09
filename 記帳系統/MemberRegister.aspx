@@ -98,30 +98,15 @@
         // 添加樣式
         lastRow.classList.add('selectedRow');
     }
+
 </script>
-<script type="text/javascript">
-    function openPopup(url) {
-        // 設定視窗的寬度和高度
-        var width = 600;
-        var height = 400;
 
-        // 計算視窗在屏幕中央的位置
-        var left = (screen.width - width) / 2;
-        var top = (screen.height - height) / 2;
-
-        // 使用 window.open 開啟新視窗
-        window.open(url, '_blank', 'width=' + width + ', height=' + height + ', top=' + top + ', left=' + left + ', resizable=yes, scrollbars=yes');
-
-        // 返回 false 以取消按鈕的後續事件
-        return false;
-    }
-</script>
 </head>
 <body>
     <form id="form1" runat="server">
         <div id="container">
             <div id="left-section">
-                <h3></h3>
+                <h3>奉獻者資料維護</h3>
                 <iframe id="yourIframe" src="MemberSheet.aspx" height="350" width="700"></iframe>
             </div>
             <div id="right-section">
