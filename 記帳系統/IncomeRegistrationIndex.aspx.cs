@@ -10,6 +10,8 @@ using System.Web.UI.WebControls;
 using System.Globalization;
 using Org.BouncyCastle.Crypto.Tls;
 using System.Reflection;
+using Newtonsoft.Json.Linq;
+using System.Data;
 
 namespace 記帳系統
 {
@@ -43,19 +45,17 @@ namespace 記帳系統
                     Session.Remove("SelectedGroup");
                   
                 }
-                if (string.IsNullOrEmpty(DateTextBox.Text))
+                if (!string.IsNullOrEmpty(DateTextBox.Text))
                 {
-                    // 如果 DateTextBox 沒有值，執行以下邏輯
-                    string date = DateTime.Now.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
-                    DateTime inputDate = DateTime.ParseExact(date, "yyyyMMdd", CultureInfo.InvariantCulture);
+                    string inputDateText = DateTextBox.Text; // 從使用者輸入的文本框中取得日期
 
-                    // 取得當天的最大流水號
-                    int maxSerialNumber = GetMaxSerialNumber(inputDate);
+                    // 解析使用者輸入的日期
+                    DateTime parsedDate = DateTime.ParseExact(inputDateText, "yyyy-MM-dd", null);
 
-                    // 新的憑證號碼
-                    string number = date + (maxSerialNumber + 1).ToString("D3");
+                    // 使用 MaxCertificateNumber 方法獲取憑證號碼
+                    string newCertificateNumber = MaxCertificateNumber(parsedDate);
 
-                    CertificateTextBox.Text = number;
+                    CertificateTextBox.Text = newCertificateNumber;
                 }
 
             }
@@ -68,28 +68,7 @@ namespace 記帳系統
             Session["income_guide"] = income_guide;
             Response.Redirect("MemberQuery.aspx");
         }
-        // 獲取當天的最大流水號
-        private int GetMaxSerialNumber(DateTime date)
-        {
-            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
-            {
-                con.Open();
-                string selectQuery = "SELECT MAX(CAST(RIGHT([憑證號碼], 3) AS INT)) FROM [New_Income_Form] WHERE [日期] = @日期";
-                SqlCommand cmd = new SqlCommand(selectQuery, con);
-                cmd.Parameters.AddWithValue("@日期", date.ToString("yyyyMMdd"));
 
-                object result = cmd.ExecuteScalar();
-
-                if (result != DBNull.Value)
-                {
-                    return Convert.ToInt32(result);
-                }
-                else
-                {
-                    return 0; // 如果當天還沒有憑證號碼，則返回0
-                }
-            }
-        }
 
         protected void DateTextBox_TextChanged(object sender, EventArgs e)
         {
@@ -100,15 +79,13 @@ namespace 記帳系統
             }
             else
             {
-                // 如果 DateTextBox 有值
-                string date = DateTime.Parse(DateTextBox.Text).ToString("yyyyMMdd");
-                DateTime inputDate = DateTime.ParseExact(date, "yyyyMMdd", CultureInfo.InvariantCulture);
+                string inputDateText = DateTextBox.Text; // 從使用者輸入的文本框中取得日期
 
-                // 取得當天的最大流水號
-                int maxSerialNumber = GetMaxSerialNumber(inputDate);
+                // 解析使用者輸入的日期
+                DateTime parsedDate = DateTime.ParseExact(inputDateText, "yyyy-MM-dd", null);
 
-                // 新的憑證號碼
-                string number = date + (maxSerialNumber + 1).ToString("D3");
+                // 使用 MaxCertificateNumber 方法獲取憑證號碼
+                string number = MaxCertificateNumber(parsedDate);
 
                 CertificateTextBox.Text = number;
             }
@@ -156,7 +133,6 @@ namespace 記帳系統
                     // 讀取Id的值
                     string idValue = dataKeys.Values["目次"].ToString();
 
-
                     // 取得選取行的索引
                     int selectedIndex = GridView1.SelectedRow.RowIndex;
 
@@ -188,12 +164,10 @@ namespace 記帳系統
                     selectedVoucher = (selectedVoucher == "&nbsp;") ? string.Empty : selectedVoucher;
                     selectedReceipt = (selectedReceipt == "&nbsp;") ? string.Empty : selectedReceipt;
 
-                    Response.Write(selectedDate);
-
+                    DateTextBox.Text = selectedDate;
                     CertificateTextBox.Text= selectedCertificate;
                     ContributionDropDownList.Text = selectedContribution;
                     NameTextBox.Text = selectedName;
-                    //DateTextBox.Text = DateTime.Parse(selectedDate).ToString("yyyy-MM-dd");
                     IDTextBox.Text = selectedUser_Id;
                     ReceiptDropDownList.Text = selectedReceipt;
                     DepDropDownList.Text = selectedDep;
@@ -201,13 +175,274 @@ namespace 記帳系統
                     AmountTextBox.Text = selectedAmount;
                     NoteTextBox.Text = selectedNote;
                     VoucherTextBox.Text = selectedVoucher;
-
+                    KeyIDTextBox.Text = idValue;
 
                 }
             }
 
             // 調用 JavaScript 腳本來調整滾動位置
             ScriptManager.RegisterStartupScript(this, GetType(), "scrollScript", "AdjustScrollPosition();", true);
+        }
+
+        protected void TopButton_Click(object sender, EventArgs e)
+        {
+            // 注冊 JavaScript 腳本
+            ScriptManager.RegisterStartupScript(this, GetType(), "scrollToTop", "ScrollToTop();", true);
+        }
+
+        protected void BottomButton_Click(object sender, EventArgs e)
+        {
+            // 注冊 JavaScript 腳本
+            ScriptManager.RegisterStartupScript(this, GetType(), "scrollToBottom", "ScrollToBottom();", true);
+        }
+
+        protected void UpdateButton_Click(object sender, EventArgs e)
+        {
+            // 獲取畫面上輸入的數據
+            string Certificate = CertificateTextBox.Text; // 取得 Certificate 的值
+            string Contribution = ContributionDropDownList.Text; //取得 Contribution 的值
+            string Name = NameTextBox.Text; // 取得 Name 的值
+            string User_Id = IDTextBox.Text; // 取得 User_Id 的值
+            string Dep = DepDropDownList.Text; // 取得 Dep 的值
+            string Date = DateTextBox.Text; // 取得 Date 的值
+            string Note = NoteTextBox.Text; // 取得 Note 的值
+            string Project = ProjectTextBox.Text; //取得 Project 的值
+            string Amount = AmountTextBox.Text; // 取得 Amount 的值
+            string Voucher = VoucherTextBox.Text; // 取得 Voucher 的值
+            string Receipt = ReceiptDropDownList.Text; // 取得 Receipt 的值
+            string Group = GroupTextBox.Text; // 取得 Group 的值
+
+            if (KeyIDTextBox != null)
+            {
+                string inputDateText = DateTextBox.Text; // 從使用者輸入的文本框中取得日期
+
+                // 解析使用者輸入的日期
+                DateTime parsedDate = DateTime.ParseExact(inputDateText, "yyyy-MM-dd", null);
+
+                // 使用 MaxCertificateNumber 方法獲取憑證號碼
+                string number = MaxCertificateNumber(parsedDate);
+
+                Certificate = number;
+            }
+            // 使用ADO.NET執行資料庫插入操作
+            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
+            {
+                con.Open();
+                string insertQuery = "INSERT INTO [New_Income_Form] ([憑證號碼],[奉獻項目], [姓名],[User_ID], [日期], [收據], [部門], [傳票號碼], [金額], [摘要],[專案名稱],[組別]) " +
+                    "VALUES (@憑證號碼, @奉獻項目, @姓名, @User_ID, @日期, @收據, @部門, @傳票號碼, @金額, @摘要, @專案名稱, @組別)";
+                SqlCommand cmd = new SqlCommand(insertQuery, con);
+                cmd.Parameters.AddWithValue("@憑證號碼", Certificate);
+                cmd.Parameters.AddWithValue("@奉獻項目", Contribution);
+                cmd.Parameters.AddWithValue("@姓名", Name);
+                cmd.Parameters.AddWithValue("@User_ID", User_Id);
+                cmd.Parameters.AddWithValue("@日期", Date);
+                cmd.Parameters.AddWithValue("@收據", Receipt);
+                cmd.Parameters.AddWithValue("@部門", Dep);
+                cmd.Parameters.AddWithValue("@傳票號碼", Voucher);
+                cmd.Parameters.AddWithValue("@金額", Amount);
+                cmd.Parameters.AddWithValue("@摘要", Note);
+                cmd.Parameters.AddWithValue("@專案名稱", Project);
+                cmd.Parameters.AddWithValue("@組別", Group);
+                cmd.ExecuteNonQuery();
+            }
+            // 清空TextBox
+            ClearTextBoxes();
+
+            // 重新載入資料或更新UI
+            // 這裡你可以更新GridView或其他UI元件，以顯示最新數據
+            GridView1.DataBind(); // 重新綁定GridView;
+
+            ScriptManager.RegisterStartupScript(this, GetType(), "ScrollToBottom", "ScrollToBottom();", true);
+        }
+        private void ClearTextBoxes()
+        {
+            // 清空TextBox
+            CertificateTextBox.Text = "";
+            ContributionDropDownList.Text = "";
+            NameTextBox.Text = "";
+            DateTextBox.Text = "";
+            IDTextBox.Text = "";
+            GroupTextBox.Text = "";
+            ReceiptDropDownList.Text = "";
+            DepDropDownList.Text = "";
+            ProjectTextBox.Text = "";
+            AmountTextBox.Text = "";
+            NoteTextBox.Text = "";
+            VoucherTextBox.Text = "";
+            KeyIDTextBox.Text="";
+        }
+
+        protected void IndexButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private string MaxCertificateNumber(DateTime parsedDate)
+        {
+            // 將日期轉換為指定的格式：yyyyMMdd
+            string formattedDate = parsedDate.ToString("yyyyMMdd");
+
+            // 建立連接字串
+            string connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+
+            // 建立 SQL 查詢語句
+            string sqlQuery = "SELECT MAX([憑證號碼]) AS MaxCertificateNumber FROM [New_Income_Form] WHERE [憑證號碼] LIKE @FormattedDate";
+
+            // 建立 SQLDataAdapter 和 DataTable 來執行查詢
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlDataAdapter adapter = new SqlDataAdapter(sqlQuery, connection))
+                {
+                    // 設定查詢條件
+                    adapter.SelectCommand.Parameters.AddWithValue("@FormattedDate", $"{formattedDate}%");
+
+                    DataTable dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+
+                    // 檢查查詢結果是否包含數據
+                    if (dataTable.Rows.Count > 0 && dataTable.Rows[0]["MaxCertificateNumber"] != DBNull.Value)
+                    {
+                        // 有查到數據，生成新的憑證號碼
+                        int maxNumber = int.Parse(dataTable.Rows[0]["MaxCertificateNumber"].ToString().Substring(8)); // 取得最大數字部分
+                        return $"{formattedDate}{(maxNumber + 1):D3}";
+                    }
+                    else
+                    {
+                        // 沒有查到數據，回傳新的憑證號碼（001）
+                        return $"{formattedDate}001";
+                    }
+                }
+            }
+        }
+
+        protected void ReviseButton_Click(object sender, EventArgs e)
+        {
+            string keyid = KeyIDTextBox.Text;
+            if (!String.IsNullOrEmpty(keyid))
+            {
+
+                string reviseCertificate = CertificateTextBox.Text; // 取得 Certificate 的值
+                string reviseContribution = ContributionDropDownList.Text; //取得 Contribution 的值
+                string reviseName = NameTextBox.Text; // 取得 Name 的值
+                string reviseUser_Id = IDTextBox.Text; // 取得 User_Id 的值
+                string reviseDep = DepDropDownList.Text; // 取得 Dep 的值
+                string reviseDate = DateTextBox.Text; // 取得 Date 的值
+                string reviseNote = NoteTextBox.Text; // 取得 Note 的值
+                string reviseProject = ProjectTextBox.Text; //取得 Project 的值
+                string reviseAmount = AmountTextBox.Text; // 取得 Amount 的值
+                string reviseVoucher = VoucherTextBox.Text; // 取得 Voucher 的值
+                string reviseReceipt = ReceiptDropDownList.Text; // 取得 Receipt 的值
+                string reviseGroup = GroupTextBox.Text; // 取得 Group 的值
+
+                int selectedId = Convert.ToInt32(keyid);
+
+                // 直接更新資料庫中的資料
+                ReviseData(selectedId, reviseCertificate, reviseContribution, reviseName, reviseUser_Id, reviseDep, reviseDate, reviseNote
+                    , reviseProject, reviseAmount, reviseVoucher, reviseReceipt, reviseGroup);
+
+                // 清空TextBox
+                ClearTextBoxes();
+
+                // 重新載入資料或更新UI
+                // 這裡你可以更新GridView或其他UI元件，以顯示最新數據
+                GridView1.DataBind(); // 重新綁定GridView;
+
+                // 調用 JavaScript 腳本來調整滾動位置
+                ScriptManager.RegisterStartupScript(this, GetType(), "scrollScript", "NewAdjustScrollPosition();", true);
+            }
+        }
+        private void ReviseData(int Id, string Certificate, string Contribution, string Name, string User_Id, string Dep, string Date, string Note
+            , string Project, string Amount, string Voucher, string Receipt, string Group)
+        {
+            // 請替換這裡的連接字串
+            string connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+
+            // SQL 更新語句
+            string updateQuery = @"
+        UPDATE [New_Income_Form]
+        SET
+            [憑證號碼] = @憑證號碼,
+            [奉獻項目] = @奉獻項目,
+            [姓名] = @姓名,
+            [User_ID] = @User_ID,
+            [日期] = @日期,
+            [收據] = @收據,
+            [部門] = @部門,
+            [傳票號碼] = @傳票號碼,
+            [金額] = @金額,
+            [摘要] = @摘要,
+            [專案名稱] = @專案名稱,
+            [組別] = @組別
+        WHERE
+            [目次] = @目次;
+    ";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand(updateQuery, connection))
+                {
+                    // 添加參數
+                    cmd.Parameters.AddWithValue("@目次", Id);
+                    cmd.Parameters.AddWithValue("@憑證號碼", Certificate);
+                    cmd.Parameters.AddWithValue("@奉獻項目", Contribution);
+                    cmd.Parameters.AddWithValue("@姓名", Name);
+                    cmd.Parameters.AddWithValue("@User_Id", User_Id);
+                    cmd.Parameters.AddWithValue("@日期", Date);
+                    cmd.Parameters.AddWithValue("@收據", Receipt);
+                    cmd.Parameters.AddWithValue("@部門", Dep);
+                    cmd.Parameters.AddWithValue("@傳票號碼", Voucher);
+                    cmd.Parameters.AddWithValue("@金額", Amount);
+                    cmd.Parameters.AddWithValue("@摘要", Note);
+                    cmd.Parameters.AddWithValue("@專案名稱", Project);
+                    cmd.Parameters.AddWithValue("@組別", Group);
+                    // 打開連接，執行更新語句
+                    connection.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        protected void DeleteButton_Click(object sender, EventArgs e)
+        {
+            string keyid = KeyIDTextBox.Text;
+            if (!String.IsNullOrEmpty(keyid))
+            {
+
+                int selectedId = Convert.ToInt32(keyid);
+
+                // 直接更新資料庫中的資料
+                DeleteData(selectedId);
+
+                // 清空TextBox
+                ClearTextBoxes();
+
+                // 重新載入資料或更新UI
+                // 這裡你可以更新GridView或其他UI元件，以顯示最新數據
+                GridView1.DataBind(); // 重新綁定GridView;
+
+                ScriptManager.RegisterStartupScript(this, GetType(), "ScrollToBottom", "ScrollToBottom();", true);
+            }
+        }
+        private void DeleteData(int id)
+        {
+            // 請替換這裡的連接字串
+            string connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+
+            // SQL 刪除語句
+            string deleteQuery = "DELETE FROM [New_Income_Form] WHERE [目次] = @目次";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = new SqlCommand(deleteQuery, connection))
+                {
+                    // 添加參數
+                    command.Parameters.AddWithValue("@目次", id);
+
+                    // 打開連接，執行刪除語句
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+            }
         }
     }
 }

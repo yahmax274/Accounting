@@ -48,6 +48,15 @@
             flex: 5; /* 兩個欄位平均佔據 .form-row 的寬度 */
             padding: 5px; /* 可選，添加內邊距以改進外觀 */
         }
+        .column2-1 {
+            flex: 7; /* 兩個欄位平均佔據 .form-row 的寬度 */
+            padding: 5px; /* 可選，添加內邊距以改進外觀 */
+        }
+        .column2-2 {
+            flex: 3; /* 兩個欄位平均佔據 .form-row 的寬度 */
+            padding: 5px; /* 可選，添加內邊距以改進外觀 */
+            text-align: right;
+        }
         .selectButton {
             opacity: 100;
             width: 100%;
@@ -73,7 +82,7 @@
         }
         function ScrollToTop() {
             // 獲取 gridview-container 元素
-            var gridViewContainer = document.querySelector(".gridview-container");
+            var gridViewContainer = document.querySelector(".left-side");
 
             if (gridViewContainer) {
                 // 將滾動位置設置為最上方
@@ -82,17 +91,25 @@
         }
         function ScrollToBottom() {
             // 獲取 gridview-container 元素
-            var gridViewContainer = document.querySelector(".gridview-container");
+            var gridViewContainer = document.querySelector(".left-side");
 
             if (gridViewContainer) {
                 // 將滾動位置設置為最底部
                 gridViewContainer.scrollTop = gridViewContainer.scrollHeight;
             }
-        }
+            }
+            function NewAdjustScrollPosition() {
+                // 這裡的 "scrollPosition" 是您希望恢復的滾動位置，可以根據實際情況進行調整
+                var scrollPosition = 100;
+
+                // 恢復滾動位置
+                window.scrollTo(0, scrollPosition);
+            }
         </script>
 </head>
 <body>
-    <form id="form1" runat="server" class="container mt-3">
+    <h3>主日收入登錄表</h3>
+    <form id="form1" runat="server" class="container">
         <div class="left-side">
             <asp:GridView ID="GridView1" runat="server" CssClass="table table-bordered gridview-container" AutoGenerateColumns="False" DataKeyNames="目次" DataSourceID="SqlDataSource1" OnSelectedIndexChanged="GridView1_SelectedIndexChanged">
                 <Columns>
@@ -151,7 +168,7 @@
             <div class="form-row">
                 <div class="left-column">
                     <asp:Label ID="CertificateLabel" runat="server" Text="憑證號碼"></asp:Label>
-                    <asp:TextBox ID="CertificateTextBox" runat="server"></asp:TextBox>
+                    <asp:TextBox ID="CertificateTextBox" runat="server" BackColor="#CCCCFF"></asp:TextBox>
                 </div>
                 <div class="right-column">
                     <asp:Label ID="ContributionLabel" runat="server" Text="奉獻項目"></asp:Label>
@@ -227,6 +244,20 @@
                     <asp:Label ID="VoucherLabel" runat="server" Text="傳票號碼"></asp:Label>
                     <asp:TextBox ID="VoucherTextBox" runat="server"></asp:TextBox>
                 </div>
+            </div>
+            <div class="form-row">
+                <div class="column2-1">
+                    <asp:Button ID="UpdateButton" runat="server" Text="增加" OnClick="UpdateButton_Click" />
+                    <asp:Button ID="ReviseButton" runat="server" Text="修改" OnClick="ReviseButton_Click" />
+                    <asp:Button ID="DeleteButton" runat="server" Text="刪除" OnClientClick="return confirm('確定要刪除這筆資料嗎？');"  OnClick="DeleteButton_Click" />  
+                    <asp:Button ID="TopButton" runat="server" Text="第一筆" OnClick="TopButton_Click" />
+                    <asp:Button ID="BottomButton" runat="server" Text="最末筆" OnClick="BottomButton_Click" />                    
+                </div>
+                <div class="column2-2">
+                    <asp:TextBox ID="KeyIDTextBox" runat="server" BorderStyle="None" style="display: none;"  ></asp:TextBox>
+                    <asp:Button ID="IndexButton" runat="server" Text="回首頁" OnClick="IndexButton_Click" />
+                </div>
+
             </div>
         </div>
     </form>
