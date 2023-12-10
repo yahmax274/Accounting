@@ -136,6 +136,7 @@
     <Content Include="Global.asax" />
     <Content Include="IncomeReceiptIndex.aspx" />
     <Content Include="IncomeRegistrationIndex.aspx" />
+    <Content Include="Index.aspx" />
     <Content Include="MemberQuery.aspx" />
     <Content Include="MemberRegisterIndex.aspx" />
     <Content Include="MemberSheet.aspx" />
@@ -250,6 +251,13 @@
     </Compile>
     <Compile Include="IncomeRegistrationIndex.aspx.designer.cs">
       <DependentUpon>IncomeRegistrationIndex.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Index.aspx.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Index.aspx.designer.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
     </Compile>
     <Compile Include="MemberQuery.aspx.cs">
       <DependentUpon>MemberQuery.aspx</DependentUpon>
