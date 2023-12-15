@@ -87,12 +87,13 @@
             <!-- 上部分放置其他控制項 -->
             <div class="controls-container">
                 <asp:Button ID="Button1" runat="server" Text="預覽列印" />
-                <asp:Button ID="Button2" runat="server" Text="回首頁" />
+                <asp:Button ID="ReturnButton" runat="server" OnClick="ReturnButton_Click" Text="回上頁" />
+                <asp:Button ID="IndexButton" runat="server" Text="回首頁" OnClick="IndexButton_Click" />
             </div>
 
             <!-- 下部分放置 GridView -->
             <div class="gridview-container">
-                <asp:GridView ID="GridView1" runat="server">
+                <asp:GridView ID="GridView1" runat="server" OnSelectedIndexChanged="GridView1_SelectedIndexChanged">
                 </asp:GridView>
             </div>
         </div>
