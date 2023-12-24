@@ -172,6 +172,26 @@ namespace 記帳系統
 
         protected void SelectButton_Click(object sender, EventArgs e)
         {
+            if (Session["donation_guide"] != null)
+            {
+                // 檢查是否有選取的行
+                if (GridView1.SelectedRow != null)
+                {
+                    // 取得選取行的索引
+                    int selectedIndex = GridView1.SelectedRow.RowIndex;
+
+                    // 取得選取行的資料
+                    string selectedUser_Id = GridView1.Rows[selectedIndex].Cells[2].Text; // 取得 User_Id 的值
+                    string selectedName = GridView1.Rows[selectedIndex].Cells[4].Text; // 取得 Name 的值
+
+                    // 將選取的資料存儲在 Session 中
+                    Session["SelectedUser_Id"] = selectedUser_Id;
+                    Session["SelectedName"] = selectedName;
+
+                    // 返回到"IncomeRegistrationIndex.aspx"
+                    Response.Redirect("DonationReceipt.aspx");
+                }
+            }
             if (Session["receipt_guide"] != null)
             {
                 // 檢查是否有選取的行

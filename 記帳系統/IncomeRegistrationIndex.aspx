@@ -189,7 +189,7 @@
             <div class="form-row">
                 <div class="left-column">
                     <asp:Label ID="NameLabel" runat="server" Text="奉獻者"></asp:Label>
-                    <asp:TextBox ID="NameTextBox" runat="server" Width="100px" BackColor="Silver" BorderColor="Silver" ReadOnly="True"></asp:TextBox>
+                    <asp:TextBox ID="NameTextBox" runat="server" Width="100px" BackColor="Silver" BorderColor="Silver" ReadOnly="True" OnTextChanged="NameTextBox_TextChanged"></asp:TextBox>
                     <asp:Button ID="MemberButton" runat="server" OnClick="MemberButton_Click" Text="..." />
                 </div>
                 <div class="right-column">

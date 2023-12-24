@@ -16,8 +16,8 @@
         }
 
         #container {
-            width: 350px; /* 調整方框寬度 */
-            height: 130px; /* 調整方框高度 */
+            width: 400px; /* 調整方框寬度 */
+            height: 200px; /* 調整方框高度 */
             border: 1px solid #ccc;
             padding: 20px;
             display: flex;
@@ -89,6 +89,15 @@
             <div class="leftSpace">
                 <!-- 左側內容 -->
                 <div class="form-row">
+                    <asp:Label ID="Label2" runat="server" Text="列印選項"></asp:Label>
+                </div>
+                <div class="form-row">
+                    <asp:RadioButtonList ID="RadioButtonList1" runat="server" OnSelectedIndexChanged="RadioButtonList1_SelectedIndexChanged" AutoPostBack="true">
+                        <asp:ListItem>編號列印</asp:ListItem>
+                        <asp:ListItem>日期列印</asp:ListItem>
+                    </asp:RadioButtonList>
+                </div>
+                <div class="form-row">
                     <asp:Label ID="Label1" runat="server" Text="起迄日期"></asp:Label>
                 </div>
                 <div class="form-row">
@@ -101,6 +110,17 @@
                 </div>
                 <div class="form-row">
                     <asp:CheckBox ID="OnlyOneCheckBox" runat="server" Text="選擇單一奉獻者列印" OnChange="handleCheckboxChange()" />
+                </div>
+                <div class="form-row">
+                    <asp:Label ID="Label3" runat="server" Text="起迄收據編號"></asp:Label>
+                </div>
+                <div class="form-row">
+                    <div class="left-column">
+                        <asp:TextBox ID="StartDataTextBox" runat="server" ></asp:TextBox>
+                    </div>
+                    <div class="right-column">
+                        <asp:TextBox ID="EndDataTextBox" runat="server" ></asp:TextBox>
+                    </div>
                 </div>
             </div>
             <div class="rightSpace">

@@ -58,6 +58,25 @@ namespace 記帳系統
                     Session.Remove("EndTextBoxValue");
                     Session.Remove("OnlyOneCheckBoxValue");
                 }
+                if (Session["TypeChoice"] != null)
+                {
+                    RadioButtonList1.SelectedValue = "編號列印";
+
+                    // 執行選擇改變事件的處理邏輯
+                    RadioButtonList1_SelectedIndexChanged(sender, e);
+                    StartDataTextBox.Text = Session["DataStart"].ToString();
+                    EndDataTextBox.Text = Session["DataEnd"].ToString();
+                    Session.Remove("DataStart");
+                    Session.Remove("DataEnd");
+                }
+                else
+                {
+                    // 第一次載入頁面，設定 RadioButtonList1 的預設選擇為日期列印
+                    RadioButtonList1.SelectedValue = "日期列印";
+
+                    // 執行選擇改變事件的處理邏輯
+                    RadioButtonList1_SelectedIndexChanged(sender, e);
+                }
             }
         }
 
@@ -75,69 +94,157 @@ namespace 記帳系統
 
         protected void ViewButton_Click(object sender, EventArgs e)
         {
-            // 取得搜尋的姓名資訊
-            string selectedUser_Id = Session["SelectedUser_Id"]?.ToString() ?? string.Empty;
-            string selectedName = Session["SelectedName"]?.ToString() ?? string.Empty;
-
-            // 判斷是否為空值
-            selectedUser_Id = (selectedUser_Id == "&nbsp;") ? string.Empty : selectedUser_Id;
-            selectedName = (selectedName == "&nbsp;") ? string.Empty : selectedName;
-
-            // 清除 Session 中的選擇資料
-            Session.Remove("SelectedUser_Id");
-            Session.Remove("SelectedName");
-
-            // 取得搜尋的時間區間資訊
-            string StartDay = StartTextBox.Text;
-            string EndDay = EndTextBox.Text;
-            Session["StartDay"] = StartDay;
-            Session["EndDay"] = EndDay;
-
-            // 使用查詢條件查詢資料
-            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
+            if (RadioButtonList1.SelectedValue == "日期列印")
             {
-                con.Open();
-                string selectQuery = "SELECT [憑證號碼], [奉獻項目], [姓名], [User_ID] AS 代號, [日期], [收據], [部門], [傳票號碼], [金額], [摘要], [專案名稱], [組別] FROM [New_Income_Form] WHERE 1 = 1";
+                // 取得搜尋的姓名資訊
+                string selectedUser_Id = Session["SelectedUser_Id"]?.ToString() ?? string.Empty;
+                string selectedName = Session["SelectedName"]?.ToString() ?? string.Empty;
 
-                // 加入搜尋條件，要求 [姓名] 和 [User_ID] 同時符合
-                if (!string.IsNullOrEmpty(selectedName) && !string.IsNullOrEmpty(selectedUser_Id))
+                // 判斷是否為空值
+                selectedUser_Id = (selectedUser_Id == "&nbsp;") ? string.Empty : selectedUser_Id;
+                selectedName = (selectedName == "&nbsp;") ? string.Empty : selectedName;
+
+                // 清除 Session 中的選擇資料
+                Session.Remove("SelectedUser_Id");
+                Session.Remove("SelectedName");
+
+                // 取得搜尋的時間區間資訊
+                string StartDay = StartTextBox.Text;
+                string EndDay = EndTextBox.Text;
+                Session["StartDay"] = StartDay;
+                Session["EndDay"] = EndDay;
+
+                // 使用查詢條件查詢資料
+                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
                 {
-                    selectQuery += " AND [姓名] = @SelectedName AND [User_ID] = @SelectedUser_Id";
+                    con.Open();
+                    string selectQuery = "SELECT [憑證號碼], [奉獻項目], [姓名], [User_ID] AS 代號, [日期], [收據], [部門], [傳票號碼], [金額], [摘要], [專案名稱], [組別] FROM [New_Income_Form] WHERE 1 = 1";
+
+                    // 加入搜尋條件，要求 [姓名] 和 [User_ID] 同時符合
+                    if (!string.IsNullOrEmpty(selectedName) && !string.IsNullOrEmpty(selectedUser_Id))
+                    {
+                        selectQuery += " AND [姓名] = @SelectedName AND [User_ID] = @SelectedUser_Id";
+                    }
+
+                    // 加入日期區間條件
+                    if (!string.IsNullOrEmpty(StartDay) && !string.IsNullOrEmpty(EndDay))
+                    {
+                        // 使用 CONVERT 將日期字串轉換為日期型態
+                        selectQuery += " AND CONVERT(DATE, [日期], 23) BETWEEN CONVERT(DATE, @StartDay, 23) AND CONVERT(DATE, @EndDay, 23)";
+                    }
+
+                    SqlCommand cmd = new SqlCommand(selectQuery, con);
+
+                    // 加入搜尋條件的參數
+                    if (!string.IsNullOrEmpty(selectedName) && !string.IsNullOrEmpty(selectedUser_Id))
+                    {
+                        cmd.Parameters.AddWithValue("@SelectedName", selectedName);
+                        cmd.Parameters.AddWithValue("@SelectedUser_Id", selectedUser_Id);
+                    }
+
+                    // 加入日期區間的參數
+                    if (!string.IsNullOrEmpty(StartDay) && !string.IsNullOrEmpty(EndDay))
+                    {
+                        // 使用 CONVERT 將日期字串轉換為日期型態
+                        cmd.Parameters.AddWithValue("@StartDay", StartDay);
+                        cmd.Parameters.AddWithValue("@EndDay", EndDay);
+                    }
+
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    adapter.Fill(dt);
+
+                    // 將查詢結果保存到 Session
+                    Session["SearchResults"] = dt;
                 }
 
-                // 加入日期區間條件
-                if (!string.IsNullOrEmpty(StartDay) && !string.IsNullOrEmpty(EndDay))
-                {
-                    // 使用 CONVERT 將日期字串轉換為日期型態
-                    selectQuery += " AND CONVERT(DATE, [日期], 23) BETWEEN CONVERT(DATE, @StartDay, 23) AND CONVERT(DATE, @EndDay, 23)";
-                }
-
-                SqlCommand cmd = new SqlCommand(selectQuery, con);
-
-                // 加入搜尋條件的參數
-                if (!string.IsNullOrEmpty(selectedName) && !string.IsNullOrEmpty(selectedUser_Id))
-                {
-                    cmd.Parameters.AddWithValue("@SelectedName", selectedName);
-                    cmd.Parameters.AddWithValue("@SelectedUser_Id", selectedUser_Id);
-                }
-
-                // 加入日期區間的參數
-                if (!string.IsNullOrEmpty(StartDay) && !string.IsNullOrEmpty(EndDay))
-                {
-                    // 使用 CONVERT 將日期字串轉換為日期型態
-                    cmd.Parameters.AddWithValue("@StartDay", StartDay);
-                    cmd.Parameters.AddWithValue("@EndDay", EndDay);
-                }
-
-                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-                DataTable dt = new DataTable();
-                adapter.Fill(dt);
-
-                // 將查詢結果保存到 Session
-                Session["SearchResults"] = dt;
+                Response.Redirect("PrintDemand.aspx");
             }
+            if (RadioButtonList1.SelectedValue == "編號列印")
+            {
+                // 取得搜尋的收據資料
+                string StartData = StartDataTextBox.Text;
+                string EndData = EndDataTextBox.Text;
+                Session["StartData"] = StartData;
+                Session["EndData"] = EndData;
 
-            Response.Redirect("PrintDemand.aspx");
+                // 使用查詢條件查詢資料
+                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
+                {
+                    con.Open();
+                    string selectQuery = "SELECT [傳票號碼] AS  [憑證號碼], [奉獻項目], [姓名], [User_ID] AS 代號 , [日期], [收據], [部門], [傳票號碼], [金額], [摘要], [專案名稱], [組別] FROM [New_Income_Form] WHERE 1 = 1";
+
+                    // 加入搜尋條件，要求 [傳票號碼] 在指定範圍內
+                    if (!string.IsNullOrEmpty(StartData) && !string.IsNullOrEmpty(EndData))
+                    {
+                        selectQuery += " AND [傳票號碼] BETWEEN @StartData AND @EndData";
+                    }
+
+                    SqlCommand cmd = new SqlCommand(selectQuery, con);
+
+                    // 加入搜尋條件的參數
+                    if (!string.IsNullOrEmpty(StartData) && !string.IsNullOrEmpty(EndData))
+                    {
+                        cmd.Parameters.AddWithValue("@StartData", StartData);
+                        cmd.Parameters.AddWithValue("@EndData", EndData);
+                    }
+
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    adapter.Fill(dt);
+
+                    // 將查詢結果保存到 Session
+                    Session["SearchResults"] = dt;
+                }
+
+                Response.Redirect("PrintDemand.aspx");
+            }
+        }
+
+        protected void RadioButtonList1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // 判斷選擇的是哪個列印選項
+            if (RadioButtonList1.SelectedValue == "編號列印")
+            {
+                // 如果選擇的是編號列印，隱藏相應的控件
+                Label1.Visible = false;
+                StartTextBox.Visible = false;
+                EndTextBox.Visible = false;
+                OnlyOneCheckBox.Visible = false;
+                SelectButton.Visible = false;
+
+                // 額外隱藏日期列印相關控件
+                Label3.Visible = true;
+                StartDataTextBox.Visible = true;
+                EndDataTextBox.Visible = true;
+            }
+            else if (RadioButtonList1.SelectedValue == "日期列印")
+            {
+                // 如果選擇的是日期列印，隱藏相應的控件
+                Label3.Visible = false;
+                StartDataTextBox.Visible = false;
+                EndDataTextBox.Visible = false;
+
+                // 額外隱藏編號列印相關控件
+                Label1.Visible = true;
+                StartTextBox.Visible = true;
+                EndTextBox.Visible = true;
+                OnlyOneCheckBox.Visible = true;
+                SelectButton.Visible = true;
+            }
+            else
+            {
+                // 如果選擇的是其他情況，顯示所有控件
+                Label1.Visible = true;
+                StartTextBox.Visible = true;
+                EndTextBox.Visible = true;
+                OnlyOneCheckBox.Visible = true;
+                SelectButton.Visible = true;
+
+                Label3.Visible = true;
+                StartDataTextBox.Visible = true;
+                EndDataTextBox.Visible = true;
+            }
         }
     }
 }

@@ -444,5 +444,10 @@ namespace 記帳系統
                 }
             }
         }
+
+        protected void NameTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
