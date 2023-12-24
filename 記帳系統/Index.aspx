@@ -87,6 +87,7 @@
                 <asp:Button ID="Button1" runat="server" Text="預覽列印" Height="200px" Width="300px" OnClick="Button1_Click" />
                 <asp:Button ID="Button2" runat="server" Text="主日收入登錄表" Height="200px" Width="300px" OnClick="Button2_Click" />
                 <asp:Button ID="Button3" runat="server" Text="奉獻者資料維護" Height="200px" Width="300px" OnClick="Button3_Click" />
+                <asp:Button ID="Button4" runat="server" Text="奉獻收據" Height="200px" Width="300px" OnClick="Button4_Click" />
             </div>
 
             <!-- 下部分放置 GridView -->
