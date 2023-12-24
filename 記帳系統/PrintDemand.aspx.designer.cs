@@ -24,6 +24,15 @@ namespace 記帳系統
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
+        /// PrintButton 控制項。
+        /// </summary>
+        /// <remarks>
+        /// 自動產生的欄位。
+        /// 若要修改，請將欄位宣告從設計工具檔案移到程式碼後置檔案。
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button PrintButton;
+
+        /// <summary>
         /// Button1 控制項。
         /// </summary>
         /// <remarks>
