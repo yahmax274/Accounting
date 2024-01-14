@@ -58,7 +58,6 @@
 <body>
     <form id="form1" runat="server">
         <div id="container">
-            <h2>奉獻收據</h2>
             <div id="top">
                 <!-- 上區塊的內容放在這裡 -->
                 <asp:Label ID="Label1" runat="server" Text="奉獻者"></asp:Label>

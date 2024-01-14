@@ -29,10 +29,5 @@ namespace 記帳系統
         {
             Response.Redirect("IncomeReceiptIndex.aspx");
         }
-
-        protected void Button4_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("DonationReceipt.aspx");
-        }
     }
 }
