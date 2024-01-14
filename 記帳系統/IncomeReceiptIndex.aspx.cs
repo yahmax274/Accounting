@@ -157,7 +157,7 @@ namespace 記帳系統
                     // 將查詢結果保存到 Session
                     Session["SearchResults"] = dt;
                 }
-
+                Session["PrintDate"] = "PrintDate";
                 Response.Redirect("PrintDemand.aspx");
             }
             if (RadioButtonList1.SelectedValue == "編號列印")
@@ -166,7 +166,7 @@ namespace 記帳系統
                 string StartData = StartDataTextBox.Text;
                 string EndData = EndDataTextBox.Text;
                 Session["StartData"] = StartData;
-                Session["EndData"] = EndData;
+                Session["EndData"] = EndData; 
 
                 // 使用查詢條件查詢資料
                 using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
@@ -196,7 +196,7 @@ namespace 記帳系統
                     // 將查詢結果保存到 Session
                     Session["SearchResults"] = dt;
                 }
-
+                Session["PrintSerialNumber"] = "PrintSerialNumber";
                 Response.Redirect("PrintDemand.aspx");
             }
         }
