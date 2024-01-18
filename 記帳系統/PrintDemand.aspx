@@ -86,7 +86,7 @@
             <h3>列印</h3>
             <!-- 上部分放置其他控制項 -->
             <div class="controls-container">
-                <asp:Button ID="PrintButton" runat="server" Text="預覽列印" OnClick="Button1_Click" />
+                <asp:Button ID="PrintButton" runat="server" Text="預覽列印" OnClick="PrintButton_Click" />
                 <asp:Button ID="Button1" runat="server" OnClick="Button1_Click1" Text="基本資料設定" />
                 <asp:Button ID="ReturnButton" runat="server" OnClick="ReturnButton_Click" Text="回上頁" />
                 <asp:Button ID="IndexButton" runat="server" Text="回首頁" OnClick="IndexButton_Click" />

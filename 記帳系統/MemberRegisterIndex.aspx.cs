@@ -253,5 +253,9 @@ namespace 記帳系統
             Response.Redirect("MemberQuery.aspx");
         }
 
+        protected void IndexButton_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("Index.aspx");
+        }
     }
 }

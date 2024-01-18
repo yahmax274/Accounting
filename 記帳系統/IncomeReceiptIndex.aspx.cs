@@ -172,8 +172,8 @@ namespace 記帳系統
                 using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
                 {
                     con.Open();
-                    string selectQuery = "SELECT [傳票號碼] AS  [憑證號碼], [奉獻項目], [姓名], [User_ID] AS 代號 , [日期], [收據], [部門], [傳票號碼], [金額], [摘要], [專案名稱], [組別] FROM [New_Income_Form] WHERE 1 = 1";
-
+                    //string selectQuery = "SELECT [傳票號碼] AS  [憑證號碼], [奉獻項目], [姓名], [User_ID] AS 代號 , [日期], [收據], [部門], [傳票號碼], [金額], [摘要], [專案名稱], [組別] FROM [New_Income_Form] WHERE 1 = 1";
+                    string selectQuery = "SELECT [憑證號碼], [奉獻項目], [姓名], [User_ID] AS 代號 , [日期], [收據], [部門], [傳票號碼], [金額], [摘要], [專案名稱], [組別] FROM [New_Income_Form] WHERE 1 = 1";
                     // 加入搜尋條件，要求 [傳票號碼] 在指定範圍內
                     if (!string.IsNullOrEmpty(StartData) && !string.IsNullOrEmpty(EndData))
                     {

@@ -274,7 +274,7 @@ namespace 記帳系統
 
         protected void IndexButton_Click(object sender, EventArgs e)
         {
-
+            Response.Redirect("Index.aspx");
         }
 
         private string MaxCertificateNumber(DateTime parsedDate)

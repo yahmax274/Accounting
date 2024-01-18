@@ -151,7 +151,7 @@
                         <asp:TextBox ID="NoteTextBox" runat="server" Height="90px" TextMode="MultiLine" Width="600px"></asp:TextBox>
                     </div>
                     <div class="form-row">
-                        <asp:Button ID="IndexButton" runat="server" Text="回首頁" />
+                        <asp:Button ID="IndexButton" runat="server" Text="回首頁" OnClick="IndexButton_Click" />
                         <asp:TextBox ID="KeyIDTextBox" runat="server" BorderStyle="None" style="display: none;"  ></asp:TextBox>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <asp:Button ID="UpdateButton" runat="server" Text="新增" OnClick="UpdateButton_Click" /><asp:Button ID="SearchButton" runat="server" Text="查詢" OnClientClick="return openPopup();" OnClick="SearchButton_Click" /><asp:Button ID="DeleteButton" runat="server" Text="刪除" OnClientClick="return confirm('確定要刪除這筆資料嗎？');" OnClick="DeleteButton_Click" /><asp:Button ID="ReviseButton" runat="server" Text="修改" OnClick="ReviseButton_Click" />

@@ -104,6 +104,14 @@
                         <asp:TextBox ID="AdministrationTextBox" runat="server"></asp:TextBox>
                     </div>
                 </div>
+                <div class="left-container">
+                    <div class="form-row">
+                        <asp:Label ID="Label7" runat="server" Text="經辦人"></asp:Label>
+                    </div>
+                    <div class="form-row">
+                        <asp:TextBox ID="ManagerTextBox" runat="server"></asp:TextBox>
+                    </div>
+                </div>
             </div>
             <div class="right">
                 <div class="right-container">

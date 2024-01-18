@@ -46,6 +46,7 @@ namespace 記帳系統
                     PrincipalTextBox.Text = reader["Principal"].ToString();
                     PhoneTextBox.Text = reader["Phone"].ToString();
                     AdministrationTextBox.Text = reader["Administration"].ToString();
+                    ManagerTextBox.Text = reader["Manager"].ToString();
                 }
 
                 reader.Close();
@@ -58,7 +59,7 @@ namespace 記帳系統
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string query = "UPDATE Basic_Information SET [Group] = @Group, Address = @Address, Register = @Register, Principal = @Principal, Phone = @Phone, Administration = @Administration WHERE Id = @Id";
+                string query = "UPDATE Basic_Information SET [Group] = @Group, Address = @Address, Register = @Register, Principal = @Principal, Phone = @Phone, Administration = @Administration, Manager = @Manager WHERE Id = @Id";
                 SqlCommand command = new SqlCommand(query, connection);
 
                 // 取得TextBox中的值
@@ -68,6 +69,7 @@ namespace 記帳系統
                 string principalValue = PrincipalTextBox.Text;
                 string phoneValue = PhoneTextBox.Text;
                 string administrationValue = AdministrationTextBox.Text;
+                string ManagerValue = ManagerTextBox.Text;
 
                 // 使用參數化查詢以避免 SQL 注入攻擊
                 command.Parameters.AddWithValue("@Group", groupValue);
@@ -76,6 +78,7 @@ namespace 記帳系統
                 command.Parameters.AddWithValue("@Principal", principalValue);
                 command.Parameters.AddWithValue("@Phone", phoneValue);
                 command.Parameters.AddWithValue("@Administration", administrationValue);
+                command.Parameters.AddWithValue("@Manager", ManagerValue);
                 command.Parameters.AddWithValue("@Id", targetId);
 
                 connection.Open();

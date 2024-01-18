@@ -29,7 +29,7 @@ namespace 記帳系統
         }
 
         static void Example01_WordTmplRendering()
-        {
+        {/*
             var templatePath = @"C:\Users\User\Desktop\資料庫\記帳系統\記帳系統\套板模板測試.docx";
             var docxBytes = Examples.WordRender.GenerateDocx(File.ReadAllBytes(templatePath),
                 new Dictionary<string, string>()
@@ -39,11 +39,11 @@ namespace 記帳系統
                 });
             File.WriteAllBytes(
                 Path.Combine(ResultFolder, $"套表測試-{DateTime.Now:HHmmss}.docx"),
-                docxBytes);
+                docxBytes);*/
         }
     }
 
-    namespace Examples
+    /*namespace Examples
     {
         public static class WordRender
         {
@@ -112,6 +112,6 @@ namespace 記帳系統
                 }
             }
         }
-    }
+    }*/
 
 }
